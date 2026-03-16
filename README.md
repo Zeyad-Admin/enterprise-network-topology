@@ -91,3 +91,87 @@ Enables secure connectivity for remote users and branch offices over public netw
 
 *   **VPN Concentrator**: Terminates VPN tunnels from remote clients, encrypting and decrypting traffic to ensure secure communication.
 *   **Remote Users**: Individuals accessing the corporate network from outside the office.
+
+---
+
+## Linux-Centric Enterprise Infrastructure
+
+This advanced topology represents a fully Linux-powered enterprise infrastructure, significantly more complex than the base topology. Every server, service, and appliance runs on a Linux distribution, showcasing the power and versatility of open-source technology in enterprise environments.
+
+### Linux Infrastructure Topology Diagram
+
+![Linux Enterprise Infrastructure](screenshots/linux-enterprise-infrastructure.png)
+
+### Key Linux Components
+
+#### Edge Security (nftables + Suricata IDS)
+- **Dual Linux Firewalls** running nftables with Suricata IDS/IPS on Ubuntu 22.04
+- **OpenVPN & WireGuard Gateways** for site-to-site and remote access VPN on Debian 12
+- **HAProxy External Load Balancer** with Active/Passive HA on Rocky Linux 9
+
+#### DMZ Services (VLAN 10)
+- **Nginx Reverse Proxies** with WAF and rate limiting on Alpine Linux
+- **BIND9 Authoritative DNS** on Ubuntu 22.04
+- **Postfix Mail Gateway** with SpamAssassin + ClamAV on Debian 12
+- **SSH Bastion Host** with 2FA and audit logging on hardened Ubuntu
+
+#### Kubernetes Cluster (VLAN 20)
+- **3-Node Control Plane** with etcd and API Server on Ubuntu 22.04
+- **4 Worker Nodes** with containerd runtime on Ubuntu 22.04
+- **Harbor Container Registry** on Rocky Linux 9
+- **Nginx Ingress Controller** with Cert-Manager TLS
+
+#### Application Servers (VLAN 30)
+- **Apache Web Servers** with PHP-FPM and ModSecurity on RHEL 9
+- **Tomcat Application Servers** for Java microservices on Rocky Linux 9
+- **Node.js API Gateway** on Alpine Linux
+- **Python Flask/Django REST API** on Ubuntu 22.04
+- **HAProxy Internal LB** with Keepalived VRRP HA on Debian 12
+
+#### Database Cluster (VLAN 40)
+- **PostgreSQL HA Cluster** with Patroni and streaming replication on Debian 12
+- **MySQL InnoDB Cluster** with group replication on Rocky Linux 9
+- **Redis Sentinel Cluster** (3-node HA) for caching and sessions on Ubuntu 22.04
+- **MongoDB Replica Set** (3-node) for document storage on Debian 12
+- **PgBouncer Connection Pooler** on Alpine Linux
+
+#### Storage Network (VLAN 50)
+- **NFS Server** with ZFS on Linux on Ubuntu 22.04
+- **Ceph Distributed Storage** with 2 Monitors and 3 OSD Nodes (12x 4TB NVMe each) on Debian 12
+- **Samba File Server** with Active Directory integration on Rocky Linux 9
+- **MinIO Object Storage** (S3-compatible, 4-node cluster) on Ubuntu 22.04
+
+#### Monitoring & Logging (VLAN 60)
+- **Prometheus + Grafana + Alertmanager** stack on Ubuntu 22.04
+- **Zabbix Server** with SNMP and agent monitoring on Debian 12
+- **ELK Stack** (Elasticsearch 3-node cluster, Logstash, Kibana) on Rocky Linux 9
+- **Graylog** centralized syslog server on Debian 12
+
+#### CI/CD & DevOps (VLAN 70)
+- **GitLab CE** for source code and CI/CD pipelines on Ubuntu 22.04
+- **Jenkins Controller + 2 Agents** for build orchestration on Debian 12 / Ubuntu 22.04
+- **Ansible Tower/AWX** for configuration management on Rocky Linux 9
+- **Terraform Runner** for Infrastructure as Code on Ubuntu 22.04
+- **HashiCorp Vault** HA cluster for secrets management on Debian 12
+- **Nexus Repository** for artifact storage on Rocky Linux 9
+
+#### Management Network (VLAN 100)
+- **OpenLDAP** with HA replication for directory services on Debian 12
+- **FreeIPA** for identity management with Kerberos + DNS on Rocky Linux 9
+- **Chrony NTP, ISC DHCP, BIND9 Internal DNS** on Ubuntu 22.04
+- **Puppet Server** for configuration management on Rocky Linux 9
+- **Bacula Backup Server** for tape and disk backups on Debian 12
+
+#### Wireless (VLAN 80)
+- **Linux WiFi Controller** with OpenWrt management on Ubuntu 22.04
+- **3x 802.11ax Access Points**
+
+### Linux Distribution Summary
+
+| Distribution | Role | Count |
+|---|---|---|
+| Ubuntu 22.04 | Firewalls, K8s, Apps, Monitoring, CI/CD, Management | 20+ |
+| Debian 12 | VPN, Mail, Databases, Storage, DevOps | 15+ |
+| Rocky Linux 9 | Load Balancers, Apps, Databases, CI/CD | 10+ |
+| RHEL 9 | Enterprise Web Servers | 2 |
+| Alpine Linux | Lightweight Proxies, API Gateway, Connection Pooler | 4 |

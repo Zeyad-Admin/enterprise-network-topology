@@ -1,0 +1,253 @@
+graph TB
+    subgraph INTERNET["🌐 INTERNET / WAN"]
+        ISP1["ISP-1<br/>Primary Link<br/>1 Gbps"]
+        ISP2["ISP-2<br/>Backup Link<br/>500 Mbps"]
+        REMOTE_USERS["Remote Users<br/>& Branch Offices"]
+    end
+
+    subgraph EDGE_SECURITY["🔒 EDGE SECURITY ZONE"]
+        direction TB
+        FW_EXT1["Linux Firewall 1<br/>nftables + Suricata IDS<br/>Ubuntu 22.04"]
+        FW_EXT2["Linux Firewall 2<br/>nftables + Suricata IDS<br/>Ubuntu 22.04"]
+        VPN_GW1["OpenVPN Gateway 1<br/>Site-to-Site & Remote<br/>Debian 12"]
+        VPN_GW2["WireGuard Gateway 2<br/>High-Speed VPN<br/>Debian 12"]
+        HAPROXY_EXT["HAProxy LB Cluster<br/>External Load Balancer<br/>Active/Passive HA<br/>Rocky Linux 9"]
+    end
+
+    subgraph DMZ["🛡️ DMZ - VLAN 10"]
+        direction TB
+        NGINX1["Nginx Reverse Proxy 1<br/>WAF + Rate Limiting<br/>Alpine Linux"]
+        NGINX2["Nginx Reverse Proxy 2<br/>WAF + Rate Limiting<br/>Alpine Linux"]
+        DNS_EXT["BIND9 External DNS<br/>Authoritative DNS<br/>Ubuntu 22.04"]
+        MAIL_GW["Postfix Mail Gateway<br/>SpamAssassin + ClamAV<br/>Debian 12"]
+        BASTION["SSH Bastion Host<br/>2FA + Audit Logging<br/>Hardened Ubuntu"]
+    end
+
+    subgraph CORE_NETWORK["🏗️ CORE NETWORK LAYER"]
+        CORE_SW1["Core Switch 1<br/>L3 Routing<br/>10G Backbone"]
+        CORE_SW2["Core Switch 2<br/>L3 Routing<br/>10G Backbone"]
+        CORE_SW1 <--> |"LACP Bond<br/>Redundant Link"| CORE_SW2
+    end
+
+    subgraph K8S_CLUSTER["☸️ KUBERNETES CLUSTER - VLAN 20"]
+        direction TB
+        K8S_MASTER1["K8s Control Plane 1<br/>etcd + API Server<br/>Ubuntu 22.04"]
+        K8S_MASTER2["K8s Control Plane 2<br/>etcd + API Server<br/>Ubuntu 22.04"]
+        K8S_MASTER3["K8s Control Plane 3<br/>etcd + API Server<br/>Ubuntu 22.04"]
+        K8S_WORKER1["K8s Worker Node 1<br/>containerd Runtime<br/>Ubuntu 22.04"]
+        K8S_WORKER2["K8s Worker Node 2<br/>containerd Runtime<br/>Ubuntu 22.04"]
+        K8S_WORKER3["K8s Worker Node 3<br/>containerd Runtime<br/>Ubuntu 22.04"]
+        K8S_WORKER4["K8s Worker Node 4<br/>containerd Runtime<br/>Ubuntu 22.04"]
+        HARBOR["Harbor Registry<br/>Container Images<br/>Rocky Linux 9"]
+        INGRESS["Nginx Ingress Controller<br/>Cert-Manager TLS<br/>Pod Network"]
+    end
+
+    subgraph APP_SERVERS["📦 APPLICATION SERVERS - VLAN 30"]
+        direction TB
+        APACHE1["Apache Web Server 1<br/>PHP-FPM + ModSecurity<br/>RHEL 9"]
+        APACHE2["Apache Web Server 2<br/>PHP-FPM + ModSecurity<br/>RHEL 9"]
+        TOMCAT1["Tomcat App Server 1<br/>Java Microservices<br/>Rocky Linux 9"]
+        TOMCAT2["Tomcat App Server 2<br/>Java Microservices<br/>Rocky Linux 9"]
+        NODEJS1["Node.js Server<br/>API Gateway<br/>Alpine Linux"]
+        PYTHON_APP["Python Flask/Django<br/>REST API Backend<br/>Ubuntu 22.04"]
+        HAPROXY_INT["HAProxy Internal LB<br/>App Load Balancer<br/>Keepalived VRRP HA<br/>Debian 12"]
+    end
+
+    subgraph DATABASE_CLUSTER["🗄️ DATABASE CLUSTER - VLAN 40"]
+        direction TB
+        PG_PRIMARY["PostgreSQL Primary<br/>Patroni HA Cluster<br/>Debian 12"]
+        PG_REPLICA1["PostgreSQL Replica 1<br/>Streaming Replication<br/>Debian 12"]
+        PG_REPLICA2["PostgreSQL Replica 2<br/>Streaming Replication<br/>Debian 12"]
+        MYSQL_PRIMARY["MySQL Primary<br/>InnoDB Cluster<br/>Rocky Linux 9"]
+        MYSQL_REPLICA["MySQL Replica<br/>Group Replication<br/>Rocky Linux 9"]
+        REDIS_CLUSTER["Redis Sentinel Cluster<br/>Cache + Sessions<br/>3-Node HA<br/>Ubuntu 22.04"]
+        MONGODB["MongoDB Replica Set<br/>Document Store<br/>3-Node Cluster<br/>Debian 12"]
+        PGBOUNCER["PgBouncer<br/>Connection Pooler<br/>Alpine Linux"]
+    end
+
+    subgraph STORAGE["💾 STORAGE NETWORK - VLAN 50"]
+        direction TB
+        NFS_SERVER["NFS Server<br/>Shared Storage<br/>ZFS on Linux<br/>Ubuntu 22.04"]
+        CEPH_MON1["Ceph Monitor 1<br/>Distributed Storage<br/>Debian 12"]
+        CEPH_MON2["Ceph Monitor 2<br/>Distributed Storage<br/>Debian 12"]
+        CEPH_OSD1["Ceph OSD Node 1<br/>12x 4TB NVMe<br/>Debian 12"]
+        CEPH_OSD2["Ceph OSD Node 2<br/>12x 4TB NVMe<br/>Debian 12"]
+        CEPH_OSD3["Ceph OSD Node 3<br/>12x 4TB NVMe<br/>Debian 12"]
+        SAMBA["Samba File Server<br/>AD Integration<br/>Windows Share Compat<br/>Rocky Linux 9"]
+        MINIO["MinIO Object Storage<br/>S3-Compatible<br/>4-Node Cluster<br/>Ubuntu 22.04"]
+    end
+
+    subgraph MONITORING["📊 MONITORING & LOGGING - VLAN 60"]
+        direction TB
+        PROMETHEUS["Prometheus Server<br/>Metrics Collection<br/>Ubuntu 22.04"]
+        GRAFANA["Grafana Dashboard<br/>Visualization<br/>Ubuntu 22.04"]
+        ZABBIX["Zabbix Server<br/>Infrastructure Monitoring<br/>SNMP + Agent<br/>Debian 12"]
+        ELK_ELASTIC["Elasticsearch Cluster<br/>3-Node Log Storage<br/>Rocky Linux 9"]
+        ELK_LOGSTASH["Logstash Pipeline<br/>Log Processing<br/>Rocky Linux 9"]
+        ELK_KIBANA["Kibana Dashboard<br/>Log Visualization<br/>Rocky Linux 9"]
+        ALERTMANAGER["Alertmanager<br/>PagerDuty + Slack<br/>Ubuntu 22.04"]
+        GRAYLOG["Graylog Server<br/>Centralized Syslog<br/>Debian 12"]
+    end
+
+    subgraph CICD["🔧 CI/CD & DEVOPS - VLAN 70"]
+        direction TB
+        GITLAB["GitLab CE Server<br/>Source Code + CI/CD<br/>Ubuntu 22.04"]
+        JENKINS["Jenkins Controller<br/>Build Orchestration<br/>Debian 12"]
+        JENKINS_AGENT1["Jenkins Agent 1<br/>Build Worker<br/>Ubuntu 22.04"]
+        JENKINS_AGENT2["Jenkins Agent 2<br/>Build Worker<br/>Ubuntu 22.04"]
+        ANSIBLE["Ansible Tower/AWX<br/>Configuration Mgmt<br/>Rocky Linux 9"]
+        TERRAFORM["Terraform Runner<br/>IaC Provisioning<br/>Ubuntu 22.04"]
+        VAULT["HashiCorp Vault<br/>Secrets Management<br/>HA Cluster<br/>Debian 12"]
+        NEXUS["Nexus Repository<br/>Artifact Storage<br/>Rocky Linux 9"]
+    end
+
+    subgraph MGMT["🔑 MANAGEMENT NETWORK - VLAN 100"]
+        direction TB
+        LDAP["OpenLDAP Server<br/>Directory Services<br/>HA Replication<br/>Debian 12"]
+        FREEIPA["FreeIPA Server<br/>Identity Management<br/>Kerberos + DNS<br/>Rocky Linux 9"]
+        NTP["Chrony NTP Server<br/>Time Sync<br/>Ubuntu 22.04"]
+        SYSLOG["Rsyslog Collector<br/>Central Logging<br/>Debian 12"]
+        DHCP["ISC DHCP Server<br/>IP Management<br/>Ubuntu 22.04"]
+        DNS_INT["BIND9 Internal DNS<br/>Split-Horizon<br/>Recursive Resolver<br/>Ubuntu 22.04"]
+        PUPPET["Puppet Server<br/>Config Management<br/>Rocky Linux 9"]
+        BACKUP["Bacula Backup Server<br/>Tape + Disk<br/>Debian 12"]
+    end
+
+    subgraph WIRELESS["📡 WIRELESS - VLAN 80"]
+        WIFI_CTRL["Linux WiFi Controller<br/>OpenWrt Management<br/>Ubuntu 22.04"]
+        AP1["Access Point 1<br/>802.11ax"]
+        AP2["Access Point 2<br/>802.11ax"]
+        AP3["Access Point 3<br/>802.11ax"]
+    end
+
+    %% Internet Connections
+    ISP1 --> FW_EXT1
+    ISP2 --> FW_EXT2
+    REMOTE_USERS --> VPN_GW1
+    REMOTE_USERS --> VPN_GW2
+
+    %% Edge to DMZ
+    FW_EXT1 --> HAPROXY_EXT
+    FW_EXT2 --> HAPROXY_EXT
+    VPN_GW1 --> CORE_SW1
+    VPN_GW2 --> CORE_SW2
+    HAPROXY_EXT --> NGINX1
+    HAPROXY_EXT --> NGINX2
+    HAPROXY_EXT --> DNS_EXT
+    HAPROXY_EXT --> MAIL_GW
+    HAPROXY_EXT --> BASTION
+
+    %% DMZ to Core
+    NGINX1 --> CORE_SW1
+    NGINX2 --> CORE_SW2
+    DNS_EXT --> CORE_SW1
+    MAIL_GW --> CORE_SW1
+    BASTION --> CORE_SW1
+
+    %% Core to All VLANs
+    CORE_SW1 --> K8S_MASTER1
+    CORE_SW1 --> K8S_MASTER2
+    CORE_SW2 --> K8S_MASTER3
+    CORE_SW1 --> HAPROXY_INT
+    CORE_SW2 --> HAPROXY_INT
+
+    K8S_MASTER1 --> K8S_WORKER1
+    K8S_MASTER1 --> K8S_WORKER2
+    K8S_MASTER2 --> K8S_WORKER3
+    K8S_MASTER3 --> K8S_WORKER4
+    K8S_MASTER1 --> HARBOR
+    INGRESS --> K8S_WORKER1
+    INGRESS --> K8S_WORKER2
+
+    HAPROXY_INT --> APACHE1
+    HAPROXY_INT --> APACHE2
+    HAPROXY_INT --> TOMCAT1
+    HAPROXY_INT --> TOMCAT2
+    HAPROXY_INT --> NODEJS1
+    HAPROXY_INT --> PYTHON_APP
+
+    %% App to Database
+    APACHE1 --> PGBOUNCER
+    APACHE2 --> PGBOUNCER
+    TOMCAT1 --> MYSQL_PRIMARY
+    TOMCAT2 --> MYSQL_PRIMARY
+    NODEJS1 --> REDIS_CLUSTER
+    PYTHON_APP --> MONGODB
+    PGBOUNCER --> PG_PRIMARY
+    PG_PRIMARY --> PG_REPLICA1
+    PG_PRIMARY --> PG_REPLICA2
+    MYSQL_PRIMARY --> MYSQL_REPLICA
+
+    %% Storage Connections
+    CORE_SW1 --> NFS_SERVER
+    CORE_SW2 --> SAMBA
+    CEPH_MON1 --> CEPH_OSD1
+    CEPH_MON1 --> CEPH_OSD2
+    CEPH_MON2 --> CEPH_OSD3
+    CORE_SW1 --> CEPH_MON1
+    CORE_SW2 --> CEPH_MON2
+    CORE_SW1 --> MINIO
+
+    %% Monitoring
+    CORE_SW1 --> PROMETHEUS
+    PROMETHEUS --> GRAFANA
+    PROMETHEUS --> ALERTMANAGER
+    CORE_SW1 --> ZABBIX
+    ELK_LOGSTASH --> ELK_ELASTIC
+    ELK_ELASTIC --> ELK_KIBANA
+    CORE_SW2 --> ELK_LOGSTASH
+    CORE_SW2 --> GRAYLOG
+
+    %% CI/CD
+    CORE_SW1 --> GITLAB
+    CORE_SW2 --> JENKINS
+    JENKINS --> JENKINS_AGENT1
+    JENKINS --> JENKINS_AGENT2
+    CORE_SW1 --> ANSIBLE
+    CORE_SW1 --> VAULT
+    GITLAB --> NEXUS
+    JENKINS --> NEXUS
+    CORE_SW2 --> TERRAFORM
+
+    %% Management
+    CORE_SW1 --> LDAP
+    CORE_SW2 --> FREEIPA
+    CORE_SW1 --> NTP
+    CORE_SW1 --> SYSLOG
+    CORE_SW2 --> DHCP
+    CORE_SW2 --> DNS_INT
+    CORE_SW1 --> PUPPET
+    CORE_SW2 --> BACKUP
+
+    %% Wireless
+    CORE_SW2 --> WIFI_CTRL
+    WIFI_CTRL --> AP1
+    WIFI_CTRL --> AP2
+    WIFI_CTRL --> AP3
+
+    %% Styling
+    classDef internet fill:#ff6b6b,stroke:#c92a2a,color:#fff,stroke-width:2px
+    classDef firewall fill:#e64980,stroke:#a61e4d,color:#fff,stroke-width:2px
+    classDef dmz fill:#f59f00,stroke:#e67700,color:#fff,stroke-width:2px
+    classDef core fill:#4dabf7,stroke:#1971c2,color:#fff,stroke-width:3px
+    classDef k8s fill:#845ef7,stroke:#5f3dc4,color:#fff,stroke-width:2px
+    classDef app fill:#51cf66,stroke:#2b8a3e,color:#fff,stroke-width:2px
+    classDef db fill:#ff922b,stroke:#d9480f,color:#fff,stroke-width:2px
+    classDef storage fill:#20c997,stroke:#099268,color:#fff,stroke-width:2px
+    classDef monitoring fill:#fcc419,stroke:#e67700,color:#333,stroke-width:2px
+    classDef cicd fill:#748ffc,stroke:#4263eb,color:#fff,stroke-width:2px
+    classDef mgmt fill:#868e96,stroke:#495057,color:#fff,stroke-width:2px
+    classDef wireless fill:#da77f2,stroke:#9c36b5,color:#fff,stroke-width:2px
+
+    class ISP1,ISP2,REMOTE_USERS internet
+    class FW_EXT1,FW_EXT2,VPN_GW1,VPN_GW2,HAPROXY_EXT firewall
+    class NGINX1,NGINX2,DNS_EXT,MAIL_GW,BASTION dmz
+    class CORE_SW1,CORE_SW2 core
+    class K8S_MASTER1,K8S_MASTER2,K8S_MASTER3,K8S_WORKER1,K8S_WORKER2,K8S_WORKER3,K8S_WORKER4,HARBOR,INGRESS k8s
+    class APACHE1,APACHE2,TOMCAT1,TOMCAT2,NODEJS1,PYTHON_APP,HAPROXY_INT app
+    class PG_PRIMARY,PG_REPLICA1,PG_REPLICA2,MYSQL_PRIMARY,MYSQL_REPLICA,REDIS_CLUSTER,MONGODB,PGBOUNCER db
+    class NFS_SERVER,CEPH_MON1,CEPH_MON2,CEPH_OSD1,CEPH_OSD2,CEPH_OSD3,SAMBA,MINIO storage
+    class PROMETHEUS,GRAFANA,ZABBIX,ELK_ELASTIC,ELK_LOGSTASH,ELK_KIBANA,ALERTMANAGER,GRAYLOG monitoring
+    class GITLAB,JENKINS,JENKINS_AGENT1,JENKINS_AGENT2,ANSIBLE,TERRAFORM,VAULT,NEXUS cicd
+    class LDAP,FREEIPA,NTP,SYSLOG,DHCP,DNS_INT,PUPPET,BACKUP mgmt
+    class WIFI_CTRL,AP1,AP2,AP3 wireless
