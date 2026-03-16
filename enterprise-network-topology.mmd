@@ -1,0 +1,55 @@
+graph TD
+    subgraph "Internet/WAN Edge"
+        A[Internet] --> B(Router/Firewall Edge)
+        B --> C{External Firewall}
+    end
+
+    subgraph "DMZ"
+        C --> D[Web Server]
+        C --> E[DNS Server]
+        C --> F[Mail Server]
+    end
+
+    subgraph "Internal Network"
+        C --> G{Internal Firewall}
+        G --> H[Core Switch]
+
+        subgraph "Core/Distribution Layer"
+            H --> I[Distribution Switch 1]
+            H --> J[Distribution Switch 2]
+        end
+
+        subgraph "Access Layer"
+            I --> K[Access Switch A]
+            J --> L[Access Switch B]
+            K --> M[End User Devices]
+            L --> N[End User Devices]
+        end
+
+        subgraph "Server Farm"
+            G --> O[Server Farm Firewall]
+            O --> P[Application Server]
+            O --> Q[Database Server]
+            O --> R[Storage Server]
+        end
+
+        subgraph "Management Network"
+            G --> S[Management Switch]
+            S --> T[Monitoring Server]
+            S --> U[Log Server]
+            S --> V[Backup Server]
+        end
+
+        subgraph "Wireless Network"
+            I --> W[Wireless Controller]
+            W --> X[Access Point 1]
+            W --> Y[Access Point 2]
+            X --> Z[Wireless Clients]
+            Y --> Z
+        end
+
+        subgraph "VPN/Remote Access"
+            B --> AA[VPN Concentrator]
+            AA --> BB[Remote Users]
+        end
+    end
