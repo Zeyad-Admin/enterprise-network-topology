@@ -1,0 +1,21 @@
+graph TD
+    subgraph "Server Farm Zone"
+        SFF[Server Farm Firewall] --> AS[Application Servers]
+        SFF --> DB[Database Cluster]
+        SFF --> ST[Storage Area Network - SAN]
+        
+        subgraph "Application Layer"
+            AS --> AS1[App Server 1]
+            AS --> AS2[App Server 2]
+        end
+        
+        subgraph "Data Layer"
+            DB --> DB1[(Primary DB)]
+            DB --> DB2[(Replica DB)]
+        end
+        
+        subgraph "Storage Layer"
+            ST --> NAS[NAS Storage]
+            ST --> SAN[SAN Storage]
+        end
+    end

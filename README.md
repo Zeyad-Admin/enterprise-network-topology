@@ -14,6 +14,12 @@ The network is logically divided into several key zones, each serving a specific
 *   **Wireless Network**: Provides secure wireless connectivity for internal users.
 *   **VPN/Remote Access**: Enables secure remote access for users outside the corporate network.
 
+### Full Network Topology Diagram
+
+Below is the complete enterprise network topology diagram, illustrating the interconnectedness of all zones and components.
+
+![Full Enterprise Network Topology](screenshots/full-topology.png)
+
 ## Network Zones and Components
 
 ### Internet/WAN Edge
@@ -32,6 +38,8 @@ The DMZ hosts services that need to be accessible from the Internet but should n
 *   **DNS Server**: Provides public DNS resolution for external services.
 *   **Mail Server**: Handles incoming and outgoing email traffic.
 
+![DMZ Zone Topology](screenshots/dmz-zone.png)
+
 ### Internal Network
 
 The internal network is structured in a hierarchical three-tier model (core, distribution, access) to ensure scalability, redundancy, and efficient traffic flow.
@@ -47,6 +55,8 @@ The internal network is structured in a hierarchical three-tier model (core, dis
 *   **Access Switch A & B**: Connect end-user devices to the network. They typically implement port security, VLAN assignments, and Quality of Service (QoS).
 *   **End User Devices**: Workstations, laptops, and other devices used by employees.
 
+![Core Network Topology](screenshots/core-network.png)
+
 ### Server Farm
 
 This zone houses critical enterprise servers, requiring strong security and high availability.
@@ -55,6 +65,8 @@ This zone houses critical enterprise servers, requiring strong security and high
 *   **Application Server**: Hosts business-critical applications.
 *   **Database Server**: Stores and manages organizational data.
 *   **Storage Server**: Provides centralized storage for data and backups.
+
+![Server Farm Topology](screenshots/server-farm.png)
 
 ### Management Network
 

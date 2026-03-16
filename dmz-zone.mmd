@@ -1,0 +1,11 @@
+graph TD
+    subgraph "DMZ (Demilitarized Zone)"
+        CF[External Firewall] --> WS[Web Server Cluster]
+        CF --> DNS[DNS Server]
+        CF --> MAIL[Mail Gateway]
+        WS --> LB[Load Balancer]
+        LB --> WS1[Web Server 1]
+        LB --> WS2[Web Server 2]
+        WS1 -.-> IF[Internal Firewall]
+        WS2 -.-> IF
+    end

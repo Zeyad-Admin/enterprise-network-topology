@@ -1,0 +1,25 @@
+graph TD
+    subgraph "Core & Distribution Layers"
+        IF[Internal Firewall] --> CS[Core Switch Cluster]
+        
+        subgraph "Core Layer"
+            CS --> CS1[Core Switch 1]
+            CS --> CS2[Core Switch 2]
+            CS1 <--> CS2[VPC/VSS Link]
+        end
+        
+        subgraph "Distribution Layer"
+            CS1 --> DS1[Dist Switch 1]
+            CS1 --> DS2[Dist Switch 2]
+            CS2 --> DS1
+            CS2 --> DS2
+            DS1 <--> DS2[Stacking/VPC]
+        end
+        
+        subgraph "Access Layer Connectivity"
+            DS1 --> AS1[Access Switch A]
+            DS1 --> AS2[Access Switch B]
+            DS2 --> AS1
+            DS2 --> AS2
+        end
+    end
